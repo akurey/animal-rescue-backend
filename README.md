@@ -1,2 +1,2 @@
 # animal-rescue-backend
-Animal Rescue Backend Project
+Animal Rescue Backend Repository
