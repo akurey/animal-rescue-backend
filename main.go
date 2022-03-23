@@ -1,9 +1,9 @@
 package main
 
 import (
-	"net/http"
-
 	"github.com/gin-gonic/gin"
+
+	"animal-rescue-be/controllers"
 )
 
 var db = make(map[string]string)
@@ -13,10 +13,10 @@ func setupRouter() *gin.Engine {
 	// gin.DisableConsoleColor()
 	r := gin.Default()
 
+	ping := new(controllers.PingController)
+
 	// Ping test
-	r.GET("/ping", func(c *gin.Context) {
-		c.String(http.StatusOK, "pong")
-	})
+	r.GET("/ping", ping.Ping)
 
 	return r
 }
