@@ -9,6 +9,7 @@ import (
 )
 
 //PingController ...
+//TODO: remove this file after create the first controller
 type PingController struct{}
 
 //Ping ...
