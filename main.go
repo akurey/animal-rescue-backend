@@ -1,28 +1,37 @@
 package main
 
 import (
-	"github.com/gin-gonic/gin"
-
 	"animal-rescue-be/controllers"
+	middleware "animal-rescue-be/src/middleware"
+	routes "animal-rescue-be/src/routes"
+	"net/http"
+	"os"
+
+	"github.com/gin-gonic/gin"
 )
 
 var db = make(map[string]string)
 
-func setupRouter() *gin.Engine {
-	// Disable Console Color
-	// gin.DisableConsoleColor()
-	r := gin.Default()
+func main() {
+	port := os.Getenv("PORT")
+
+	if port == "" {
+		port = "8000"
+	}
+	// gin.SetMode(gin.ReleaseMode)
+	gin.SetMode(gin.DebugMode)
+
+	router := gin.New()
+	router.Use(gin.Logger())
+	routes.UserRoutes(router)
+	router.Use(middleware.Authentication())
+	router.GET("/test", func(ctx *gin.Context) { // Returns success if the request includes a valid json web token
+		ctx.JSON(http.StatusOK, gin.H{"success": true, "data": nil, "message": "already logged in"})
+	})
 
 	ping := new(controllers.PingController)
-
 	// Ping test
-	r.GET("/ping", ping.Ping)
+	router.GET("/ping", ping.Ping)
 
-	return r
-}
-
-func main() {
-	r := setupRouter()
-	// Listen and Server in 0.0.0.0:8080
-	r.Run(":8080")
+	router.Run(":" + port)
 }
