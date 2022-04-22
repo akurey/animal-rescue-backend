@@ -16,5 +16,5 @@
 
 ## Run it locally
 
-- golangci-lint run 
+- run `golangci-lint run`
 - run `go run main.go`
