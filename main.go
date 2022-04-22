@@ -1,28 +1,29 @@
 package main
 
 import (
-	"github.com/gin-gonic/gin"
-
 	"animal-rescue-be/controllers"
+
+	"github.com/gin-gonic/gin"
 )
 
-var db = make(map[string]string)
+// var db = make(map[string]string)
 
 func setupRouter() *gin.Engine {
 	// Disable Console Color
 	// gin.DisableConsoleColor()
-	r := gin.Default()
+
+	engine := gin.Default()
 
 	ping := new(controllers.PingController)
 
 	// Ping test
-	r.GET("/ping", ping.Ping)
+	engine.GET("/ping", ping.Ping)
 
-	return r
+	return engine
 }
 
 func main() {
-	r := setupRouter()
+	router := setupRouter()
 	// Listen and Server in 0.0.0.0:8080
-	r.Run(":8080")
+	router.Run(":8080")
 }
