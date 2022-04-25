@@ -1,6 +1,7 @@
 ## Getting started
 
 - brew install Go@1.18
+- brew install golangci-lint         
 - `cd YOUR_PROJECT_PATH`
 - go get . 
 
@@ -15,4 +16,5 @@
 
 ## Run it locally
 
+- run `golangci-lint run`
 - run `go run main.go`
