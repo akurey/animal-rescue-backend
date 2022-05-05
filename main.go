@@ -2,8 +2,8 @@ package main
 
 import (
 	"animal-rescue-be/controllers"
-	middleware "animal-rescue-be/src/middleware"
-	routes "animal-rescue-be/src/routes"
+	middleware "animal-rescue-be/middleware"
+	routes "animal-rescue-be/routes"
 	"net/http"
 	"os"
 

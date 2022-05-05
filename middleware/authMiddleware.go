@@ -1,12 +1,11 @@
 package middleware
 
 import (
+	utils "animal-rescue-be/utils"
 	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-
-	helper "animal-rescue-be/src/helpers"
 )
 
 // Auth validates token and authorizes users
@@ -19,7 +18,7 @@ func Authentication() gin.HandlerFunc {
 			return
 		}
 
-		claims, err := helper.ValidateToken(clientToken)
+		claims, err := utils.ValidateToken(clientToken)
 		if err != "" {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err})
 			c.Abort()

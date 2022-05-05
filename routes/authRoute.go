@@ -1,7 +1,7 @@
 package routes
 
 import (
-	controller "animal-rescue-be/src/controllers"
+	controller "animal-rescue-be/controllers"
 
 	"github.com/gin-gonic/gin"
 )
