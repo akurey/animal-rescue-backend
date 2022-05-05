@@ -24,10 +24,7 @@ func Authentication() gin.HandlerFunc {
 			c.Abort()
 			return
 		}
-
 		c.Set("email", claims.Email)
-
 		c.Next()
-
 	}
 }

@@ -7,14 +7,18 @@ import (
 var currentIndex int
 var users [100]models.User
 
+// this file will be updated based on the database/orm implementation.
+
 func GetUserByEmail(email string) models.User {
 	var user models.User
-	e := "email@gmail.com"
-	user.Email = &e
+	password := "password"
+	user.Email = &email
+	user.Password = &password
 	return user
 }
 
 func UserExists(email string) bool {
+	// Check if the user exists
 	return false
 }
 
