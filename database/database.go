@@ -12,15 +12,15 @@ import (
 var DB *gorm.DB
 
 var (
-	host     = os.Getenv("HOST")
-	port     = os.Getenv("PORT")
-	user     = os.Getenv("USR")
-	password = os.Getenv("PASS")
-	dbname   = os.Getenv("DATABASE")
+	DB_HOST     = os.Getenv("HOST")
+	DB_PORT     = os.Getenv("PORT")
+	DB_USER     = os.Getenv("USR")
+	DB_PASSWORD = os.Getenv("PASS")
+	DB_NAME     = os.Getenv("DATABASE")
 )
 
 func InitDatabase() {
-	psqlConnInfo := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable", host, port, user, password, dbname)
+	psqlConnInfo := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable", DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME)
 	database, err := gorm.Open("postgres", psqlConnInfo)
 	helpers.HandleErr(err)
 
