@@ -14,8 +14,13 @@ func setupRouter() *gin.Engine {
 
 	ping := new(controllers.PingController)
 
+	errorC := new(controllers.ErrorController)
+
 	// Ping test
 	engine.GET("/ping", ping.Ping)
+
+	// Error test
+	engine.GET("/error", errorC.Error)
 
 	return engine
 }
