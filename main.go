@@ -2,6 +2,11 @@ package main
 
 import (
 	"animal-rescue-be/controllers"
+	"animal-rescue-be/database"
+
+	"log"
+
+	"github.com/joho/godotenv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -20,7 +25,15 @@ func setupRouter() *gin.Engine {
 	return engine
 }
 
+func init() {
+	err := godotenv.Load(".env")
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+}
+
 func main() {
+	database.InitDatabase()
 	router := setupRouter()
 	// Listen and Server in 0.0.0.0:8080
 	router.Run(":8080")

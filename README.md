@@ -17,6 +17,7 @@
 
 ## Run it locally
 
+- add a .env file on the root folder with the DB config variables (DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME, DB_MAX_IDLE_CONNS, DB_MAX_OPEN_CONNS) or fill out the given one with the correct DB credentials and config values
 - run `golangci-lint run`
 - run `go run main.go`
 - run `go test ./tests/unit`
