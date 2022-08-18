@@ -37,6 +37,7 @@ func InitDatabase() {
 	psqlConnInfo := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s", DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME)
 	database, err := gorm.Open("postgres", psqlConnInfo)
 	helpers.HandleErr(err)
+	// database.LogMode(true) Enable to debug query built by gorm
 
 	maxIddleConns, err := strconv.Atoi(DB_MAX_IDLE_CONNS)
 	if err != nil {
