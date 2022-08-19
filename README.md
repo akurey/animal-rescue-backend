@@ -9,7 +9,7 @@
 ## Project structure
 
 - `Controllers` : keep all your API controllers here
-- `repo` : keep all your database and queries here
+- `database` : keep all your database and queries here
 - `models` : keep all your data structs here
 - `Test` : keep all your test files here
 - `main.go` : main project file

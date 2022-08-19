@@ -3,7 +3,6 @@ package main
 import (
 	"animal-rescue-be/controllers"
 	"animal-rescue-be/database"
-
 	"log"
 
 	"github.com/joho/godotenv"
@@ -17,17 +16,15 @@ func setupRouter() *gin.Engine {
 
 	engine := gin.Default()
 
-	ping := new(controllers.PingController)
+	animal := new(controllers.AnimalController)
 
-	// Ping test
-	engine.GET("/ping", ping.Ping)
+	engine.GET("/animals", animal.GetAnimals)
 
 	return engine
 }
 
 func init() {
-	err := godotenv.Load(".env")
-	if err != nil {
+	if godotenv.Load(".env") != nil {
 		log.Fatal("Error loading .env file")
 	}
 }
