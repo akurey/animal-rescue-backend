@@ -14,7 +14,7 @@ type AnimalController struct{}
 func (ctrl AnimalController) GetAnimals(context *gin.Context) {
 	var animals []*models.Animal
 	err := database.DB.Table("\"AP_Animals\" AA").
-		Select("AA.id, AA.name, AA.scientific_name, ACS.name conservation_status, ACS.abbreviation conservation_abbreviation, AAC.name classification_name").
+		Select("AA.id, AA.name, AA.scientific_name, AA.created_at, ACS.name conservation_status, ACS.abbreviation conservation_abbreviation, AAC.name classification_name").
 		Joins("INNER JOIN \"AP_Conservation_Status\" ACS ON ACS.id = AA.conservation_status_id").
 		Joins("INNER JOIN \"AP_Animal_Classification\" AAC ON AAC.id = AA.classification_id").
 		Where("AA.is_deleted = ?", 0).

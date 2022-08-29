@@ -18,7 +18,11 @@ func setupRouter() *gin.Engine {
 
 	animal := new(controllers.AnimalController)
 
+	form := new(controllers.FormController)
+
 	engine.GET("/animals", animal.GetAnimals)
+
+	engine.GET("/form/:id/fields", form.GetFormFields)
 
 	return engine
 }
