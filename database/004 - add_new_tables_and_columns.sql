@@ -53,11 +53,11 @@ ALTER TABLE "AP_Users"
   ADD "sinac_registry" character varying(50) NOT NULL;
 
 ALTER TABLE "AP_Shelters"
-  ADD "trade_name" character varying(50) NULL,
+  ADD "trade_name" character varying(100) NULL,
   ADD "management_category_id" int NULL,
-  ADD "sinac_resolution_number" character varying(50) NULL,
+  ADD "sinac_resolution_number" character varying(20) NULL,
   ADD "direction_id" int NULL,
-  ADD "phone" character varying(50) NULL,
+  ADD "phone" character varying(20) NULL,
   ADD "owner" int NULL,
   ADD "regent_biologist" int NULL,
   ADD "regent_vet" int NULL
