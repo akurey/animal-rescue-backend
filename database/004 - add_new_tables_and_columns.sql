@@ -48,9 +48,9 @@ CREATE TABLE "AP_Management_Category" (
 );
 
 ALTER TABLE "AP_Users"
-  ADD "identification" character varying(50) NOT NULL,
-  ADD "collegiate_number" character varying(50) NULL,
-  ADD "sinac_registry" character varying(50) NOT NULL;
+  ADD "identification" character varying(20) NOT NULL,
+  ADD "collegiate_number" character varying(20) NULL,
+  ADD "sinac_registry" character varying(20) NOT NULL;
 
 ALTER TABLE "AP_Shelters"
   ADD "trade_name" character varying(100) NULL,
