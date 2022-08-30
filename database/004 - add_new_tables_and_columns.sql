@@ -26,7 +26,7 @@ CREATE TABLE "AP_Districts" (
 
 CREATE TABLE "AP_Directions" (
   "id" BIGSERIAL PRIMARY KEY NOT NULL,
-  "exact_direction" character varying(50) NOT NULL,
+  "exact_direction" text NOT NULL,
   "district_id" int NOT NULL,
   "created_at" timestamp DEFAULT NOW() NOT NULL,
   "updated_at" timestamp DEFAULT NOW() NOT NULL,
