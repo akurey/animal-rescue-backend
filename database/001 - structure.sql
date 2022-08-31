@@ -84,7 +84,7 @@ CREATE TABLE "AP_Animals" (
 CREATE TABLE "AP_Field_Options" (
   "id" BIGSERIAL PRIMARY KEY NOT NULL,
   "field_id" bigint NOT NULL,
-  "option" character varying(100) NOT NULL,
+  "option" _varchar NOT NULL,
   "created_at" timestamp DEFAULT NOW() NOT NULL,
   "updated_at" timestamp DEFAULT NOW() NOT NULL,
   "is_deleted" bit DEFAULT '0' NOT NULL
