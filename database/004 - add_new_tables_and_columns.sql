@@ -60,7 +60,7 @@ ALTER TABLE "AP_Shelters"
   ADD "phone" character varying(20) NULL,
   ADD "owner" int NULL,
   ADD "regent_biologist" int NULL,
-  ADD "regent_vet" int NULL
+  ADD "regent_vet" int NULL;
 
 
 ALTER TABLE "AP_Shelters" ADD FOREIGN KEY ("management_category_id") REFERENCES "AP_Management_Category" ("id");
@@ -81,4 +81,4 @@ ALTER TABLE "AP_Shelters"
   ALTER COLUMN "phone" SET NOT NULL,
   ALTER COLUMN "owner" SET NOT NULL,
   ALTER COLUMN "regent_biologist" SET NOT NULL,
-  ALTER COLUMN "regent_vet" SET NOT NULL
+  ALTER COLUMN "regent_vet" SET NOT NULL;
