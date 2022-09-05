@@ -23,10 +23,15 @@ func (ctrl ReportController) GetReports(context *gin.Context) {
 	helpers.HandleErr(err_body)
 
 	err := database.DB.Table("\"AP_Animal_Reports\" AR").
-		Select("AR.id, AR.created_at, AR.is_approved, SH.name shelter_name, FO.name form_name, US.first_name reporter_name, US.last_name reporter_lastname").
+		Select("AR.id, to_char(AR.created_at, 'DD/MM/YYYY') created_at, AR.is_approved, AN.name animal_name, CONCAT(DIS.name,', ',CA.name,', ',PR.name) place_of_rescue").
 		Joins("INNER JOIN \"AP_Forms\" FO ON AR.form_id = FO.id").
-		Joins("INNER JOIN \"AP_Shelters\" SH ON FO.shelter_id = SH.id").
-		Joins("INNER JOIN \"AP_Users\" US ON AR.reporter_id = US.id").
+		Joins("INNER JOIN \"AP_Animals\" AN ON AR.animal_id = AN.id").
+		Joins("INNER JOIN \"AP_Fields\" FI ON FI.name='Dirección'").
+		Joins("INNER JOIN \"AP_Report_Field_Values\" FV ON AR.id=FV.report_id AND fi.id=fv.field_id").
+		Joins("INNER JOIN \"AP_Directions\" DIR ON CAST(FV.value AS BIGINT)=DIR.id").
+		Joins("INNER JOIN \"AP_Districts\" DIS ON DIR.district_id=DIS.id").
+		Joins("INNER JOIN \"AP_Cantons\" CA ON DIS.canton_id=CA.id").
+		Joins("INNER JOIN \"AP_Provinces\" PR ON CA.province_id=PR.id").
 		Where("FO.shelter_id = ?", body.ShelterId).
 		Find(&reports).Error
 	helpers.HandleErr(err)
