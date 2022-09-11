@@ -28,6 +28,8 @@ func setupRouter() *gin.Engine {
 
 	engine.GET("/reports", report.GetReports)
 
+	engine.POST("/reports/new", report.AddReport)
+
 	return engine
 }
 
