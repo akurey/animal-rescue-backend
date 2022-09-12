@@ -2,12 +2,12 @@ package models
 
 type AnimalReport struct {
 	ID         				int64 `db:"id, primarykey, autoincrement" json:"id"`
-	IdAnimal        		int64 
-	AnimalName   			string
-	ScientificName  		string
-	ConservationStatusName 	string
+	Idanimal        		int64 
+	Animalname   			string
+	Scientificname  		string
+	Conservationstatusname 	string
 	Abbreviaton  			string
-	ClassificationName 		string
+	Classificationname 		string
 	Fields     				string `db:"option" json:"option"` //TODO: use []string instead of string
 }
 type Report struct {

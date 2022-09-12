@@ -12,14 +12,15 @@ import (
 type ReportController struct{}
 
 func (ctrl ReportController) GetAnimalRecord(context *gin.Context) {
-	var formField []*models.Report
+	var report []*models.AnimalReport
+
 	reportId := context.Param("id")
-	err := database.DB.Exec("CALL public.ASP_GetAnimalReport($1, $2); fetch all in $3;", reportId, "test", "test").
-	Find(&formField).Error
+	err := database.DB.Raw("SELECT * FROM public.AFN_GetAnimalReport(?);", reportId).Scan(&report).
+	Find(&report).Error
 
 	helpers.HandleErr(err)
 
-	context.JSON(http.StatusOK, gin.H{"response": formField})
+	context.JSON(http.StatusOK, gin.H{"response": report})
 }
 type GetReportBody struct {
 	 ShelterId int64 `json:"user_shelter_id"`
