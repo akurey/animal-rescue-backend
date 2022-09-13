@@ -15,6 +15,13 @@ type GetReportBody struct {
 	 ShelterId int64 `json:"user_shelter_id"`
 }
 
+type AddReportBody struct {
+	AnimalId int64 `json:"animal_id"`
+	ReporterId int64 `json:"reporter_id"`
+	FormId int64 `json:"form_id"`
+	FieldValues string `json:"field_values"`
+}
+
 func (ctrl ReportController) GetReports(context *gin.Context) {
 	var reports []*models.Report
 
@@ -37,4 +44,17 @@ func (ctrl ReportController) GetReports(context *gin.Context) {
 	helpers.HandleErr(err)
 
 	context.JSON(http.StatusOK, gin.H{"response": reports})
+}
+
+func (ctrl ReportController) AddReport(context *gin.Context) {
+	var report []*models.Report
+
+	body := AddReportBody{}
+	err_body := context.BindJSON(&body)
+	helpers.HandleErr(err_body)
+
+	database.DB.Raw("SELECT * FROM public.afn_addanimalreport(?,?,?,?) AS r(ID bigint, created_at text, is_approved bit(1), animal_name varchar(100));",
+		body.AnimalId, body.ReporterId, body.FormId, body.FieldValues).Scan(&report);
+
+	context.JSON(http.StatusOK, gin.H{"response": report})
 }
