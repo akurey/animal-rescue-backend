@@ -15,7 +15,7 @@ func (ctrl ReportController) GetAnimalRecord(context *gin.Context) {
 	var report []*models.AnimalReport
 
 	reportId := context.Param("id")
-	err := database.DB.Raw("SELECT * FROM public.AFN_GetAnimalReport(?);", reportId).Scan(&report).
+	err := database.DB.Raw("SELECT * FROM public.AFN_GetAnimalReport(?) r(ID BIGINT, IdAnimal BIGINT, AnimalName VARCHAR, ScientificName VARCHAR, ConservationStatusName VARCHAR, Abbreviaton VARCHAR, ClassificationName VARCHAR, Fields JSONB);", reportId).Scan(&report).
 	Find(&report).Error
 
 	helpers.HandleErr(err)
