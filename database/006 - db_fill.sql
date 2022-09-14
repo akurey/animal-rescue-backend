@@ -27,9 +27,6 @@ BEGIN
     INSERT INTO public."AP_Districts"(id, name, canton_id)
 		VALUES(1, 'Santa Ana', 1), (2, 'Bahia Drake', 2);
 
-    INSERT INTO public."AP_Directions"(id, exact_direction, district_id)
-		VALUES(1, 'Alto de las Palomas', 1), (2, 'PN Corcovado', 2);
-
 	INSERT INTO public."AP_Shelters"(name, trade_name, management_category_id, sinac_resolution_number, direction_id, phone, owner, regent_biologist, regent_vet)
 		VALUES ('Refugio Animal Costa Rica', 'Refugio Santa Ana', 1, '123', 1, '22824614', 1, 1, 1)
 		RETURNING id INTO var_shelterId;
@@ -120,7 +117,7 @@ BEGIN
 		VALUES(1, var_formId, var_userId, 1, B'0', B'1'), (2, var_formId, var_userId, 2, B'0', B'1');
 
 	INSERT INTO "AP_Report_Field_Values"(report_id, field_id, value)
-		VALUES(1, 1, 'Macho'), (1, 2, 'Negro'), (1, 3, '12345'), (1, 4, 'Cerro de la muerte'), (1, 9, '1'),
-              (2, 1, 'Hembra'), (2, 2, 'Amarillo'), (2, 3, '67890'), (2, 4, 'Osa'), (2, 9, '2');
+		VALUES(1, 1, 'Macho'), (1, 2, 'Negro'), (1, 3, '12345'), (1, 4, 'Cerro de la muerte'), (1, 9, 'Alto de las Palomas ▽ 1'),
+              (2, 1, 'Hembra'), (2, 2, 'Amarillo'), (2, 3, '67890'), (2, 4, 'Osa'), (2, 9, 'PN Corcovado ▽ 2');
 
 END $$;
