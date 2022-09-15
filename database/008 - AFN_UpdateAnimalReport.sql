@@ -1,14 +1,15 @@
 CREATE OR REPLACE FUNCTION AFN_UpdateAnimalReport(
 	pReportId BIGINT, 
-	pNewAnimalId BIGINT default null,
+	pNewAnimalId BIGINT,
 	pFieldValues JSON default '{}'
 ) 
 RETURNS TABLE(report_id BIGINT, animal_id BIGINT, field_id BIGINT, value TEXT)
 LANGUAGE 'plpgsql' 
 AS $BODY$ 
 BEGIN
-	IF pNewAnimalId IS NOT null THEN
-		UPDATE "AP_Animal_Reports" SET animal_id = pNewAnimalId
+	IF pNewAnimalId != 0 THEN
+		UPDATE "AP_Animal_Reports" 
+		SET animal_id = pNewAnimalId, updated_at = NOW()
 		WHERE id = pReportId;
 	END IF;
 	
@@ -25,7 +26,7 @@ BEGIN
 	ON CONFLICT 
 		ON CONSTRAINT "AP_Report_Field_Values_report_id_field_id_key" 
 	DO 
-		UPDATE SET value = EXCLUDED.value
+		UPDATE SET value = EXCLUDED.value, updated_at = NOW()
 		WHERE "AP_Report_Field_Values".report_id = EXCLUDED.report_id 
 		AND "AP_Report_Field_Values".field_id = EXCLUDED.field_id;
 		
