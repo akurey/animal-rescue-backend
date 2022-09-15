@@ -58,3 +58,16 @@ func (ctrl ReportController) AddReport(context *gin.Context) {
 
 	context.JSON(http.StatusOK, gin.H{"response": report})
 }
+
+func (ctrl ReportController) DeleteReport(context *gin.Context) {
+	var report models.Report
+
+	body := UpdateReportBody{}
+	err_body := context.BindJSON(&body)
+	helpers.HandleErr(err_body)
+
+	database.DB.Raw("SELECT * FROM public.AFN_DeleteAnimalReport(?);", 
+		body.ReportId).Scan(&report);
+
+	context.JSON(http.StatusOK, gin.H{"response": report.ID})
+}
