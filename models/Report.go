@@ -10,6 +10,7 @@ type Report struct {
 
 type ReportFieldValue struct {
 	ReportID      int64
+	AnimalID      int64
 	FieldID       int64
 	Value         string
 }
