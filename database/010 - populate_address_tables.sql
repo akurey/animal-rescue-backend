@@ -509,3 +509,5 @@ SELECT district, C.id FROM "temp_zonas"
 INNER JOIN "AP_Cantons" C ON C.name = "temp_zonas".canton
 GROUP BY district, C.id
 ORDER BY C.id, district;
+
+DROP TABLE temp_zonas;
