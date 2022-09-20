@@ -7,3 +7,10 @@ type Report struct {
 	AnimalName    string
 	PlaceOfRescue string
 }
+
+type ReportFieldValue struct {
+	ReportID      int64
+	AnimalID      int64
+	FieldID       int64
+	Value         string
+}

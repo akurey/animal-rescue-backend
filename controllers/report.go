@@ -22,6 +22,12 @@ type AddReportBody struct {
 	FieldValues string `json:"field_values"`
 }
 
+type UpdateReportBody struct {
+	ReportId int64 `json:"report_id"`
+	AnimalId int64 `json:"animal_id"`
+	FieldValues string `json:"field_values"`
+}
+
 func (ctrl ReportController) GetReports(context *gin.Context) {
 	var reports []*models.Report
 
@@ -57,4 +63,17 @@ func (ctrl ReportController) AddReport(context *gin.Context) {
 		body.AnimalId, body.ReporterId, body.FormId, body.FieldValues).Scan(&report);
 
 	context.JSON(http.StatusOK, gin.H{"response": report})
+}
+
+func (ctrl ReportController) UpdateReport(context *gin.Context) {
+	var report_field_values []*models.ReportFieldValue
+
+	body := UpdateReportBody{}
+	err_body := context.BindJSON(&body)
+	helpers.HandleErr(err_body)
+
+	database.DB.Raw("SELECT * FROM public.AFN_UpdateAnimalReport(?, ?, ?);", 
+		body.ReportId, body.AnimalId, body.FieldValues).Scan(&report_field_values);
+
+	context.JSON(http.StatusOK, gin.H{"response": report_field_values})
 }
