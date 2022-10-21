@@ -20,6 +20,7 @@ var (
 	DB_NAME           = ""
 	DB_MAX_IDLE_CONNS = ""
 	DB_MAX_OPEN_CONNS = ""
+	SSL_MODE          = ""
 )
 
 func initEnvVariables() {
@@ -30,11 +31,12 @@ func initEnvVariables() {
 	DB_NAME = os.Getenv("DB_NAME")
 	DB_MAX_IDLE_CONNS = os.Getenv("DB_MAX_IDLE_CONNS")
 	DB_MAX_OPEN_CONNS = os.Getenv("DB_MAX_OPEN_CONNS")
+	SSL_MODE = os.Getenv("SSL_MODE")
 }
 
 func InitDatabase() {
 	initEnvVariables()
-	psqlConnInfo := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s", DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME)
+	psqlConnInfo := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=%s", DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME, SSL_MODE)
 	database, err := gorm.Open("postgres", psqlConnInfo)
 	helpers.HandleErr(err)
 	// database.LogMode(true) Enable to debug query built by gorm

@@ -3,7 +3,9 @@ package main
 import (
 	"animal-rescue-be/controllers"
 	"animal-rescue-be/database"
+	"fmt"
 	"log"
+	"os"
 
 	"github.com/joho/godotenv"
 
@@ -42,14 +44,22 @@ func setupRouter() *gin.Engine {
 }
 
 func init() {
-	if godotenv.Load(".env") != nil {
-		log.Fatal("Error loading .env file")
+	if os.Getenv("APP_ENV") != "production" {
+		if godotenv.Load(".env") != nil {
+			log.Fatal("Error loading .env file")
+		}
 	}
 }
 
 func main() {
 	database.InitDatabase()
 	router := setupRouter()
+	port := "8080"
+
+	if os.Getenv("PORT") != "" {
+		port = os.Getenv("PORT")
+	}
+
 	// Listen and Server in 0.0.0.0:8080
-	router.Run(":8080")
+	router.Run(fmt.Sprintf(":%v", port))
 }
