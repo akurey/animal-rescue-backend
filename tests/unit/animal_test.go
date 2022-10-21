@@ -1,4 +1,4 @@
-package unit_test
+package unit
 
 import (
 	"animal-rescue-be/controllers"
@@ -14,8 +14,6 @@ import (
 	"github.com/DATA-DOG/go-sqlmock"
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
-	. "github.com/onsi/ginkgo"
-	. "github.com/onsi/gomega"
 )
 
 type result struct {
