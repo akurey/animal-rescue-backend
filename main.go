@@ -30,6 +30,8 @@ func setupRouter() *gin.Engine {
 
 	engine.GET("/form/:id/fields", form.GetFormFields)
 
+	engine.GET("/form/address", form.GetAddressOptions)
+
 	engine.GET("/reports", report.GetReports)
 
 	engine.POST("/reports", report.AddReport)
