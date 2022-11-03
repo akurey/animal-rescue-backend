@@ -36,9 +36,9 @@ func setupRouter() *gin.Engine {
 
 	engine.POST("/reports", report.AddReport)
 
-	engine.PATCH("/reports", report.UpdateReport)
+	engine.PATCH("/reports/:id", report.UpdateReport)
 
-	engine.DELETE("/reports", report.DeleteReport)
+	engine.DELETE("/reports/:id", report.DeleteReport)
 
 	return engine
 }

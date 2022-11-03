@@ -19,7 +19,6 @@ type AddReportBody struct {
 }
 
 type UpdateReportBody struct {
-	ReportId int64 `json:"report_id"`
 	AnimalId int64 `json:"animal_id"`
 	FieldValues string `json:"field_values"`
 }
@@ -47,12 +46,13 @@ func (ctrl ReportController) AddReport(context *gin.Context) {
 func (ctrl ReportController) UpdateReport(context *gin.Context) {
 	var report_field_values []*models.ReportFieldValue
 
+	reportId := context.Param("id")
 	body := UpdateReportBody{}
 	err_body := context.BindJSON(&body)
 	helpers.HandleErr(err_body)
 
 	database.DB.Raw("SELECT * FROM public.AFN_UpdateAnimalReport(?, ?, ?);", 
-		body.ReportId, body.AnimalId, body.FieldValues).Scan(&report_field_values);
+	  reportId, body.AnimalId, body.FieldValues).Scan(&report_field_values);
 
 	context.JSON(http.StatusOK, gin.H{"response": report_field_values})
 }
@@ -60,12 +60,8 @@ func (ctrl ReportController) UpdateReport(context *gin.Context) {
 func (ctrl ReportController) DeleteReport(context *gin.Context) {
 	var report models.Report
 
-	body := UpdateReportBody{}
-	err_body := context.BindJSON(&body)
-	helpers.HandleErr(err_body)
-
-	database.DB.Raw("SELECT * FROM public.AFN_DeleteAnimalReport(?);", 
-		body.ReportId).Scan(&report);
+	reportId := context.Param("id")
+	database.DB.Raw("SELECT * FROM public.AFN_DeleteAnimalReport(?);", reportId).Scan(&report);
 
 	context.JSON(http.StatusOK, gin.H{"response": report.ID})
 }
