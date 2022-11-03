@@ -2,9 +2,9 @@ package models
 
 type Report struct {
 	ID            int64 `db:"id, primarykey, autoincrement" json:"id"`
-	Created_at    string `db:"id"`
+	Created_at    string 
 	IsApproved    bool
-	AnimalName    string `db:"id"`
+	AnimalName    string 
 	PlaceOfRescue string
  
 	AnimalId int64 `db:"animal_id"`
