@@ -117,5 +117,14 @@ BEGIN
            ('Terciopelo', 'Bothrops asper', 1, 2),
            ('Rana de Ojos Rojos', 'Agalychnis callidryas', 1, 4);
 
+    INSERT INTO "AP_Form_Sections" (name, form_id)
+    VALUES ('Datos del animal', 1), 
+           ('Datos del rescate', 1), 
+           ('Datos del rescatista', 1);
+
+    UPDATE "AP_Form_Fields" SET form_section_id = 1 WHERE form_id=1 AND field_id <= 6;
+    UPDATE "AP_Form_Fields" SET form_section_id = 2 WHERE form_id=1 AND field_id > 6 AND field_id <= 10;
+    UPDATE "AP_Form_Fields" SET form_section_id = 3 WHERE form_id=1 AND field_id > 10;
+
 END $$;
 

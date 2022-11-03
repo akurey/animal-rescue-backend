@@ -44,13 +44,15 @@ func setupRouter() *gin.Engine {
 
 	engine.GET("/form/:id/fields", form.GetFormFields)
 
+	engine.GET("/form/address", form.GetAddressOptions)
+
 	engine.GET("/reports", report.GetReports)
 
 	engine.POST("/reports", report.AddReport)
 
-	engine.PATCH("/reports", report.UpdateReport)
+	engine.PATCH("/reports/:id", report.UpdateReport)
 
-	engine.DELETE("/reports", report.DeleteReport)
+	engine.DELETE("/reports/:id", report.DeleteReport)
 
 	return engine
 }
