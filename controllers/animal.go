@@ -11,7 +11,7 @@ import (
 
 type AnimalController struct{}
 
-type AddAnimalBody struct {
+type AnimalBody struct {
 	AnimalName string `json:"animal_name"` 
 	ScientificName string `json:"scientific_name"` 
 	ConservationStatusId int `json:"conservation_status_id"` 
@@ -34,12 +34,37 @@ func (ctrl AnimalController) GetAnimals(context *gin.Context) {
 func (ctrl AnimalController) AddAnimal(context *gin.Context) {
 	var animal models.Animal
 
-	body := AddAnimalBody{}
+	body := AnimalBody{}
 	err_body := context.BindJSON(&body)
 	helpers.HandleErr(err_body)
 
 	err := database.DB.Raw("SELECT * FROM AFN_AddAnimal(?,?,?,?);",
 	       body.AnimalName, body.ScientificName, body.ConservationStatusId, body.ClassificationId).Scan(&animal).Error
+	helpers.HandleErr(err)
+
+	context.JSON(http.StatusOK, gin.H{"response": animal})
+}
+
+func (ctrl AnimalController) UpdateAnimal(context *gin.Context) {
+	var animal models.Animal
+
+	animalId := context.Param("id")
+	body := AnimalBody{}
+	err_body := context.BindJSON(&body)
+	helpers.HandleErr(err_body)
+
+	err := database.DB.Raw("SELECT * FROM public.AFN_UpdateAnimal(?, ?, ?, ?, ?);", 
+	       animalId, body.AnimalName, body.ScientificName, body.ConservationStatusId, body.ClassificationId).Scan(&animal).Error
+	helpers.HandleErr(err)
+
+	context.JSON(http.StatusOK, gin.H{"response": animal})
+}
+
+func (ctrl AnimalController) DeleteAnimal(context *gin.Context) {
+	var animal models.Animal
+
+	animalId := context.Param("id")
+	err := database.DB.Raw("SELECT * FROM public.AFN_DeleteAnimal(?);", animalId).Scan(&animal).Error
 	helpers.HandleErr(err)
 
 	context.JSON(http.StatusOK, gin.H{"response": animal})
