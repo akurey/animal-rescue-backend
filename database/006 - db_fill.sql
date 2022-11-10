@@ -27,6 +27,9 @@ BEGIN
     INSERT INTO public."AP_Districts"(id, name, canton_id)
 		VALUES(1, 'Santa Ana', 1), (2, 'Bahia Drake', 2);
 
+    INSERT INTO public."AP_Directions"(id, exact_direction, district_id)
+        VALUES(1, 'Alto de las Palomas', 1);
+
 	INSERT INTO public."AP_Shelters"(name, trade_name, management_category_id, sinac_resolution_number, direction_id, phone, owner, regent_biologist, regent_vet)
 		VALUES ('Refugio Animal Costa Rica', 'Refugio Santa Ana', 1, '123', 1, '22824614', 1, 1, 1)
 		RETURNING id INTO var_shelterId;
@@ -112,6 +115,15 @@ BEGIN
 			   (3, 'Lapa Roja', 'Ara macao', 1, 3),
 			   (4, 'Terciopelo', 'Bothrops asper', 1, 2),
 			   (5, 'Rana de Ojos Rojos', 'Agalychnis callidryas', 1, 4);
+
+    INSERT INTO "AP_Form_Sections" (name, form_id)
+        VALUES ('Datos del animal', 1),
+               ('Datos del rescate', 1),
+               ('Datos del rescatista', 1);
+
+    UPDATE "AP_Form_Fields" SET form_section_id = 1 WHERE form_id=1 AND field_id <= 6;
+    UPDATE "AP_Form_Fields" SET form_section_id = 2 WHERE form_id=1 AND field_id > 6 AND field_id <= 10;
+    UPDATE "AP_Form_Fields" SET form_section_id = 3 WHERE form_id=1 AND field_id > 10;
 
 	INSERT INTO "AP_Animal_Reports"(id, form_id, reporter_id, animal_id, is_public , is_approved)
 		VALUES(1, var_formId, var_userId, 1, B'0', B'1'), (2, var_formId, var_userId, 2, B'0', B'1');
