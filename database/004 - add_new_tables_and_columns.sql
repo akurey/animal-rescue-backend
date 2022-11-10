@@ -82,3 +82,11 @@ ALTER TABLE "AP_Shelters"
   ALTER COLUMN "owner" SET NOT NULL,
   ALTER COLUMN "regent_biologist" SET NOT NULL,
   ALTER COLUMN "regent_vet" SET NOT NULL;
+
+CREATE TABLE "AP_Form_Sections" (
+  "id" BIGSERIAL PRIMARY KEY NOT NULL,
+  "form_id" bigint NOT NULL,
+  "name" character varying(100) NOT NULL
+);
+ALTER TABLE "AP_Form_Fields" ADD COLUMN form_section_id BIGINT;
+ALTER TABLE "AP_Form_Fields" ADD FOREIGN KEY ("form_section_id") REFERENCES "AP_Form_Sections" ("id");

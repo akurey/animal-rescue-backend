@@ -20,7 +20,11 @@ func setupRouter() *gin.Engine {
 
 	form := new(controllers.FormController)
 
+	health := new(controllers.HealthController)
+
 	report := new(controllers.ReportController)
+
+	engine.GET("/", health.Check)
 
 	engine.GET("/animals", animal.GetAnimals)
 
@@ -28,7 +32,15 @@ func setupRouter() *gin.Engine {
 	
 	engine.GET("/report/:id", report.GetAnimalRecord)
 
+	engine.GET("/form/address", form.GetAddressOptions)
+
 	engine.GET("/reports", report.GetReports)
+
+	engine.POST("/reports", report.AddReport)
+
+	engine.PATCH("/reports/:id", report.UpdateReport)
+
+	engine.DELETE("/reports/:id", report.DeleteReport)
 
 	return engine
 }
