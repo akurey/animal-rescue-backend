@@ -29,6 +29,8 @@ func setupRouter() *gin.Engine {
 	engine.GET("/animals", animal.GetAnimals)
 
 	engine.GET("/form/:id/fields", form.GetFormFields)
+	
+	engine.GET("/report/:id", report.GetAnimalRecord)
 
 	engine.GET("/form/address", form.GetAddressOptions)
 
