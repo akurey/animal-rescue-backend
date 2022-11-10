@@ -23,7 +23,6 @@ type UpdateReportBody struct {
 	FieldValues string `json:"field_values"`
 }
 
-
 func (ctrl ReportController) GetAnimalRecord(context *gin.Context) {
 	var report models.AnimalReport
 
@@ -37,8 +36,9 @@ func (ctrl ReportController) GetAnimalRecord(context *gin.Context) {
 
 func (ctrl ReportController) GetReports(context *gin.Context) {
 	var reports []*models.Report
-	database.DB.Raw("SELECT * FROM public.AFN_GetAnimalReports();").Scan(&reports);
-
+	err := database.DB.Raw("SELECT * FROM public.AFN_GetAnimalReports();").Scan(&reports).Error;
+	helpers.HandleErr(err)
+	
 	context.JSON(http.StatusOK, gin.H{"response": reports})
 }
 
@@ -49,8 +49,9 @@ func (ctrl ReportController) AddReport(context *gin.Context) {
 	err_body := context.BindJSON(&body)
 	helpers.HandleErr(err_body)
 
-	database.DB.Raw("SELECT * FROM public.afn_addanimalreport(?,?,?,?) AS r(ID bigint, created_at text, is_approved bit(1), animal_name varchar(100));",
-		body.AnimalId, body.ReporterId, body.FormId, body.FieldValues).Scan(&report);
+	err := database.DB.Raw("SELECT * FROM public.afn_addanimalreport(?,?,?,?) AS r(ID bigint, created_at text, is_approved bit(1), animal_name varchar(100));",
+	       body.AnimalId, body.ReporterId, body.FormId, body.FieldValues).Scan(&report).Error
+	helpers.HandleErr(err)
 
 	context.JSON(http.StatusOK, gin.H{"response": report})
 }
@@ -63,8 +64,9 @@ func (ctrl ReportController) UpdateReport(context *gin.Context) {
 	err_body := context.BindJSON(&body)
 	helpers.HandleErr(err_body)
 
-	database.DB.Raw("SELECT * FROM public.AFN_UpdateAnimalReport(?, ?, ?);", 
-	  reportId, body.AnimalId, body.FieldValues).Scan(&report_field_values);
+	err := database.DB.Raw("SELECT * FROM public.AFN_UpdateAnimalReport(?, ?, ?);", 
+	       reportId, body.AnimalId, body.FieldValues).Scan(&report_field_values).Error
+	helpers.HandleErr(err)
 
 	context.JSON(http.StatusOK, gin.H{"response": report_field_values})
 }
@@ -73,7 +75,8 @@ func (ctrl ReportController) DeleteReport(context *gin.Context) {
 	var report models.Report
 
 	reportId := context.Param("id")
-	database.DB.Raw("SELECT * FROM public.AFN_DeleteAnimalReport(?);", reportId).Scan(&report);
+	err := database.DB.Raw("SELECT * FROM public.AFN_DeleteAnimalReport(?);", reportId).Scan(&report).Error
+	helpers.HandleErr(err)
 
 	context.JSON(http.StatusOK, gin.H{"response": report.ID})
 }
