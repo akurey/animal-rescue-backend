@@ -11,6 +11,13 @@ import (
 
 type AnimalController struct{}
 
+type AddAnimalBody struct {
+	AnimalName string `json:"animal_name"` 
+	ScientificName string `json:"scientific_name"` 
+	ConservationStatusId int `json:"conservation_status_id"` 
+	ClassificationId int `json:"classification_id"`
+}
+
 func (ctrl AnimalController) GetAnimals(context *gin.Context) {
 	var animals []*models.Animal
 	err := database.DB.Table("\"AP_Animals\" AA").
@@ -22,4 +29,18 @@ func (ctrl AnimalController) GetAnimals(context *gin.Context) {
 	helpers.HandleErr(err)
 
 	context.JSON(http.StatusOK, gin.H{"response": animals})
+}
+
+func (ctrl AnimalController) AddAnimal(context *gin.Context) {
+	var animal models.Animal
+
+	body := AddAnimalBody{}
+	err_body := context.BindJSON(&body)
+	helpers.HandleErr(err_body)
+
+	err := database.DB.Raw("SELECT * FROM AFN_AddAnimal(?,?,?,?);",
+	       body.AnimalName, body.ScientificName, body.ConservationStatusId, body.ClassificationId).Scan(&animal).Error
+	helpers.HandleErr(err)
+
+	context.JSON(http.StatusOK, gin.H{"response": animal})
 }
