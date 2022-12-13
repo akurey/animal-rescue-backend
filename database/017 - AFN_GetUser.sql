@@ -1,13 +1,13 @@
-CREATE OR REPLACE FUNCTION AFN_GetUser(pUserName varchar)
+CREATE OR REPLACE FUNCTION AFN_GetUser(pUserName VARCHAR(100))
 RETURNS SETOF record
       LANGUAGE 'plpgsql'
       AS $BODY$
 BEGIN
 RETURN QUERY
 
-    SELECT AR.id ID, AR.first_name First_name, AR.last_name Last_name, AR.username username, 
-    AR.email Email, AR.password Passwordd, AR.identification Identification, AR.sinac_registry Sinac, AR.token Token, AR.refresh_token RefreshToken
-    FROM "AP_Users" AR
-        WHERE AR.username = pUserName;
+    SELECT AU.id ID, AU.first_name First_name, AU.last_name Last_name, AU.username username, 
+    AU.email pEmail, AU.password pPassword, AU.identification pIdentification, AU.sinac_registry pSinac, AU.token pToken, AU.refresh_token pRefreshToken
+    FROM "AP_Users" AU
+        WHERE AU.username = pUserName;
 END;
 $BODY$;

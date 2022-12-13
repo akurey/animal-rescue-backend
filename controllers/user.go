@@ -1,14 +1,11 @@
 package controllers
 
 import (
-	// "context"
 	"fmt"
 	"log"
 	"net/http"
-	// "time"
 
 	"github.com/gin-gonic/gin"
-	// "github.com/go-playground/validator/v10"
 	"golang.org/x/crypto/bcrypt"
 	"github.com/lib/pq"
 
@@ -19,34 +16,6 @@ import (
 )
 
 type UserController struct{}
-
-type AddUserBody struct{
-	First_name   string `json:"first_name" binding:"required"`
-	Last_name    string `json:"last_name" binding:"required"`
-	Username    string `json:"username" binding:"required,alphanum"`
-	Email        string `json:"email" binding:"required,email"`
-	Password     string `json:"password" binding:"required,min=6"`
-	Identification   string `json:"identification" binding:"required"`
-	Sinac_registry string `json:"sinac_registry" binding:"required"`
-	Token         string   `json:"token"`
-	Refresh_token string   `json:"refresh_token"`
-}
-
-type UserResponse struct{
-	First_name   string `json:"first_name" binding:"required"`
-	Last_name    string `json:"last_name" binding:"required"`
-	Username    string `json:"username" binding:"required,alphanum"`
-	Email        string `json:"email" binding:"required,email"`
-	Identification   string `json:"identification" binding:"required"`
-	Sinac_registry string `json:"sinac_registry" binding:"required"`
-	Token         string   `json:"token"`
-	Refresh_token string   `json:"refresh_token"`
-}
-
-type LoginUserRequest struct {
-	Username    string `json:"username" binding:"required,alphanum"`
-	Password     string `json:"password" binding:"required,min=6"`
-}
 	
 // HashPassword return the bcrypt hash of the password
 func HashPassword(password string) string {
@@ -68,7 +37,7 @@ func CheckPassword(password string, hashedPassword string) (bool,string) {
 		check = false
 	}
 
-	return check,msg
+	return check, msg
 }
 
 func GetUser(context *gin.Context, username string ) (models.User, error, string) {
@@ -87,14 +56,14 @@ func GetUser(context *gin.Context, username string ) (models.User, error, string
 func (ctrl UserController) SignUpUser(ctx *gin.Context) {
 	var user []*models.User
 
-	body := AddUserBody{}
+	body := models.AddUserBody{}
 	err_body := ctx.BindJSON(&body)
 	helpers.HandleErr(err_body)
 
 	hashedPassword := HashPassword(body.Password)
 	body.Password = hashedPassword
 
-	token, refreshToken, _ := helpers.GenerateAllTokens(body.Username)
+	token, refreshToken, _ := helpers.GenerateUserTokens(body.Username)
 	body.Token = token
 	body.Refresh_token = refreshToken
 
@@ -113,7 +82,7 @@ func (ctrl UserController) SignUpUser(ctx *gin.Context) {
 			return
 	}
 
-	rsp := UserResponse{
+	rsp := models.UserResponse{
 		First_name: body.First_name,
 		Last_name: body.Last_name,
 		Username :body.Username,
@@ -128,10 +97,10 @@ func (ctrl UserController) SignUpUser(ctx *gin.Context) {
 }
 
 //UpdateAllTokens renews the user tokens when they login
-func UpdateAllTokens(signedToken string, signedRefreshToken string, username string) {
+func UpdateUserTokens(signedToken string, signedRefreshToken string, username string) {
 	var user models.User
 
-	err := database.DB.Raw("SELECT * FROM public.AFN_UpdateUser(?, ?, ?)r(first_name varchar(50), last_name varchar(50), username varchar(100), email varchar(200),identification varchar(20), sinac_registry varchar(20), token varchar(500), refresh_token varchar(500));", 
+	err := database.DB.Raw("SELECT * FROM public.AFN_UpdateUser(?, ?, ?) r(first_name varchar(50), last_name varchar(50), username varchar(100), email varchar(200),identification varchar(20), sinac_registry varchar(20), token varchar(500), refresh_token varchar(500));", 
 	username, signedToken, signedRefreshToken).Scan(&user).Error
 	helpers.HandleErr(err)
 
@@ -140,7 +109,7 @@ func UpdateAllTokens(signedToken string, signedRefreshToken string, username str
 
 func (ctrl UserController) LoginUser(ctx *gin.Context) {
 
-	body := LoginUserRequest{}
+	body := models.LoginUserRequest{}
 	err_body := ctx.BindJSON(&body)
 	helpers.HandleErr(err_body)
 
@@ -156,13 +125,13 @@ func (ctrl UserController) LoginUser(ctx *gin.Context) {
 
 	passwordIsValid, msg := CheckPassword(body.Password, user.Password)
 	if passwordIsValid != true{
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": msg})
+		ctx.JSON(http.StatusUnauthorized, gin.H{"error": msg})
 		return
 	}
 
-	token, refreshToken, _ := helpers.GenerateAllTokens(user.Username)
+	token, refreshToken, _ := helpers.GenerateUserTokens(user.Username)
 	
-	UpdateAllTokens(token, refreshToken, user.Username)
+	UpdateUserTokens(token, refreshToken, user.Username)
 	
 	user, err, msg = GetUser(ctx, body.Username)
 	if err != nil {

@@ -1,7 +1,6 @@
 package helpers
 
 import (
-	"log"
 	"os"
 	"time"
 	jwt "github.com/dgrijalva/jwt-go"
@@ -14,7 +13,7 @@ type SignedDetails struct{
 
 var SECRET_KEY string = os.Getenv("SECRET_KEY")
 
-func GenerateAllTokens(username string) (signedToken string, signedRefreshToken string, err error){
+func GenerateUserTokens(username string) (signedToken string, signedRefreshToken string, err error){
 	claims := &SignedDetails{
 		Username : username,
 		StandardClaims : jwt.StandardClaims{
@@ -30,11 +29,6 @@ func GenerateAllTokens(username string) (signedToken string, signedRefreshToken 
 
 	token, err := jwt.NewWithClaims(jwt.SigningMethodHS256, claims).SignedString([]byte(SECRET_KEY))
 	refreshToken, err := jwt.NewWithClaims(jwt.SigningMethodHS256, refreshClaims).SignedString([]byte(SECRET_KEY))
-
-	if err != nil {
-		log.Panic(err)
-		return
-	}
 
 	return token, refreshToken, err
 }
