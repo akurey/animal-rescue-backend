@@ -13,14 +13,14 @@ type SignedDetails struct{
 }
 
 var SECRET_KEY string = os.Getenv("SECRET_KEY")
-var TOKEN string = os.Getenv("TOKEN")
-var REFRESHTOKEN string = os.Getenv("REFRESHTOKEN")
+var TTL_TOKEN string = os.Getenv("TTL_TOKEN")
+var TTL_REFRESHTOKEN string = os.Getenv("TTL_REFRESHTOKEN")
 
 func GenerateUserTokens(username string) (signedToken string, signedRefreshToken string, err error){
 
-	intToken, err := strconv.ParseInt(TOKEN, 0, 64)
-	intRefreshToken, err := strconv.ParseInt(REFRESHTOKEN, 0, 64)
-
+	intToken, err := strconv.ParseInt(TTL_TOKEN, 0, 64)
+	intRefreshToken, err := strconv.ParseInt(TTL_REFRESHTOKEN, 0, 64)
+	
 	claims := &SignedDetails{
 		Username : username,
 		StandardClaims : jwt.StandardClaims{
