@@ -6,12 +6,8 @@ import (
 	"os"
 	"strconv"
 
-	"github.com/jinzhu/gorm"
-	_ "github.com/lib/pq"
-	
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
-
 )
 
 var DB *gorm.DB
@@ -38,10 +34,8 @@ func initEnvVariables() {
 
 func InitDatabase() {
 	initEnvVariables()
-
-	psqlConnInfo := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable ", DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME)
-	database, err := gorm.Open("postgres", psqlConnInfo)
-
+	psqlConnInfo := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s", DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME)
+	database, err := gorm.Open(postgres.Open(psqlConnInfo), &gorm.Config{})
 	helpers.HandleErr(err)
 	// database.LogMode(true) Enable to debug query built by gorm
 	db, err := database.DB()
@@ -62,4 +56,3 @@ func InitDatabase() {
 
 	DB = database
 }
-
