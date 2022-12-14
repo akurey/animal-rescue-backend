@@ -22,6 +22,7 @@ BEGIN
 		RETURNING "AP_Users".id INTO userId;
    	RETURN QUERY
 	SELECT AU.first_name,AU.last_name, AU.username, AU.email, AU.password, AU.identification, AU.sinac_registry, AU.token, AU.refresh_token
-	FROM "AP_Users" AU;
+	FROM "AP_Users" AU
+	WHERE AU.id = userId;
 END;
 $BODY$;
