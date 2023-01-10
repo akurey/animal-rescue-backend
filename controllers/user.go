@@ -135,8 +135,6 @@ func (ctrl UserController) LoginUser(ctx *gin.Context) {
 		return
 	}
 
-	// ctx.writeHeader(http.StatusOK)
-	// c.Writer.Header().Set("Content-Type", "application/json")
 	ctx.JSON(http.StatusOK, gin.H{"success": true, "data": gin.H{
 		"name": user.First_name + " " + user.Last_name,
 		"email": user.Email,
