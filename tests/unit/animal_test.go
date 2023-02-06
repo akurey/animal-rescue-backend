@@ -5,7 +5,6 @@ import (
 	"animal-rescue-be/models"
 	"database/sql"
 	"encoding/json"
-	"github.com/stretchr/testify/assert"
 	"io"
 	"net/http"
 	"net/http/httptest"
@@ -13,7 +12,9 @@ import (
 
 	"github.com/DATA-DOG/go-sqlmock"
 	"github.com/gin-gonic/gin"
-	"github.com/jinzhu/gorm"
+	"github.com/stretchr/testify/assert"
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
 )
 
 type result struct {
@@ -32,7 +33,7 @@ func TestAnimalController(t *testing.T) {
 			db, mock, err = sqlmock.New() // mock sql.DB
 			Expect(err).ShouldNot(HaveOccurred())
 
-			_, err = gorm.Open("postgres", db) // open gorm db
+			_, err = gorm.Open(postgres.New(postgres.Config{Conn: db}), &gorm.Config{}) // open gorm db
 			Expect(err).ShouldNot(HaveOccurred())
 		})
 

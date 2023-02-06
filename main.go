@@ -8,7 +8,6 @@ import (
 	"os"
 
 	"github.com/joho/godotenv"
-
 	"github.com/gin-gonic/gin"
 )
 
@@ -38,11 +37,15 @@ func setupRouter() *gin.Engine {
 
 	report := new(controllers.ReportController)
 
+	user := new(controllers.UserController)
+
 	engine.GET("/", health.Check)
 
 	engine.GET("/animals", animal.GetAnimals)
 
 	engine.GET("/form/:id/fields", form.GetFormFields)
+	
+	engine.GET("/report/:id", report.GetAnimalRecord)
 
 	engine.GET("/form/address", form.GetAddressOptions)
 
@@ -53,6 +56,10 @@ func setupRouter() *gin.Engine {
 	engine.PATCH("/reports/:id", report.UpdateReport)
 
 	engine.DELETE("/reports/:id", report.DeleteReport)
+
+	engine.POST("/users", user.SignUpUser)
+
+	engine.POST("/users/login", user.LoginUser)
 
 	return engine
 }
