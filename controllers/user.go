@@ -45,8 +45,8 @@ func GetUser(context *gin.Context, username string ) (models.User, error, string
 	msg := ""
 	err := database.DB.Raw("SELECT * FROM public.AFN_GetUser(?) r(ID BIGINT, first_name varchar(50), last_name varchar(50), username varchar(100), email varchar(200), password varchar(500), identification varchar(20), sinac_registry varchar(20), token varchar(500), refresh_token varchar(500));", 
 	       username).Scan(&user).Error
-
-	if err != nil {
+		   
+	if user.Username == "" {
 		msg = fmt.Sprintf("Username not found")
 	}
 	
@@ -114,12 +114,8 @@ func (ctrl UserController) LoginUser(ctx *gin.Context) {
 	helpers.HandleErr(err_body)
 
 	user, err, msg := GetUser(ctx, body.Username)
-	if err != nil{
-		if user.Username == ""{
-			ctx.JSON(http.StatusNotFound, gin.H{"error": msg})
-			return	
-		}
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err})
+	if user.Username == ""{
+		ctx.JSON(http.StatusNotFound, gin.H{"error": msg})
 		return	
 	}
 
@@ -140,6 +136,8 @@ func (ctrl UserController) LoginUser(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusOK, gin.H{"success": true, "data": gin.H{
+		"name": user.First_name + " " + user.Last_name,
+		"email": user.Email,
 		"token":         user.Token,
 		"refresh_token": user.Refresh_token},
 		"message": "Sign in successfull"})
