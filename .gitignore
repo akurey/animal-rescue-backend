@@ -9,6 +9,7 @@ bin-release/
 .idea/
 postgres-data
 .env
+vendor/
 
 go.sum
 
