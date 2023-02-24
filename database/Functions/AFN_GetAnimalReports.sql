@@ -1,17 +1,17 @@
-CREATE OR REPLACE FUNCTION CAST_TO_INT(TEXT, INTEGER) RETURNS INTEGER
-AS $$
-BEGIN
-    RETURN CAST($1 AS INTEGER);
-    EXCEPTION
-    	WHEN invalid_text_representation THEN
-        	RETURN $2;
-END;
-$$ LANGUAGE plpgsql IMMUTABLE;
-
-CREATE OR REPLACE FUNCTION AFN_GetAnimalReport(pReportId int)
-RETURNS SETOF record
-      LANGUAGE 'plpgsql'
-      AS $BODY$
+CREATE OR REPLACE FUNCTION AFN_GetAnimalReports() 
+RETURNS TABLE(
+	id bigint,
+	animal_id bigint,
+	animal_name varchar(100),
+	created_at text,
+	scientific_name varchar(200),
+	conservation_status_name varchar(30), 
+	abbreviation varchar(2),
+	classification_name varchar(30),
+    fields jsonb    
+)
+LANGUAGE 'plpgsql' 
+AS $BODY$ 
 BEGIN
 RETURN QUERY
 
@@ -21,8 +21,8 @@ RETURN QUERY
         INNER JOIN "AP_Cantons" AC ON AC.id = D.canton_id
         INNER JOIN "AP_Provinces" AP ON AP.id = AC.province_id
     )
-    SELECT AAR.id ID, AA.id IdAnimal, AA.name AnimalName, AA.scientific_name ScientificName,
-       ACS."name" ConservationStatusName, ACS.abbreviation Abbreviaton, AAC.name ClassificationName,
+    SELECT AAR.id ID, AA.id IdAnimal, AA.name AnimalName, to_char(AAR.created_at, 'DD/MM/YYYY') CreatedAt, AA.scientific_name ScientificName,
+       ACS."name" ConservationStatusName, ACS.abbreviation Abbreviation, AAC.name ClassificationName,
        JSONB_OBJECT_AGG(AF.name, COALESCE((D.value || JSONB_BUILD_OBJECT('Exacta', SPLIT_PART(ARFV.value, '▽', 1)))::TEXT, ARFV.value)) Fields
     FROM "AP_Animal_Reports" AAR
          INNER JOIN "AP_Animals" AA ON AAR.animal_id = AA.id
@@ -32,11 +32,6 @@ RETURN QUERY
          INNER JOIN "AP_Fields" AF ON AF.id = ARFV.field_id
          INNER JOIN "AP_Field_Types" AFT ON AF.field_type_id = AFT.id
          LEFT JOIN Directions D ON AFT.name = 'Address' AND D.id = CAST_TO_INT(SPLIT_PART(ARFV.value, '▽', 2), 0)
-    WHERE AAR.id = pReportId
     GROUP BY AAR.id, AA.id, AA.name, AA.scientific_name, ACS.name, ACS.abbreviation, AAC.name;
-
 END;
 $BODY$;
-
--- Usage:
--- SELECT * FROM public.AFN_GetAnimalReport(2) AS r(ID BIGINT, IdAnimal BIGINT, AnimalName VARCHAR, ScientificName VARCHAR, ConservationStatusName VARCHAR, Abbreviaton VARCHAR, ClassificationName VARCHAR, Fields JSONB);

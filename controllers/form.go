@@ -14,14 +14,14 @@ type FormController struct{}
 func (ctrl FormController) GetFormFields(context *gin.Context) {
 	var formField []*models.FormField
 	formId := context.Param("id")
-	err := database.DB.Raw("SELECT * FROM public.AFN_GetFormFields(?);", formId).Scan(&formField).Error;
+	err := database.DB.Raw("SELECT * FROM public.AFN_GetFormFields(?);", formId).Scan(&formField).Error
 	helpers.HandleErr(err)
 
 	context.JSON(http.StatusOK, gin.H{"response": formField})
 }
 
 func (ctrl FormController) GetAddressOptions(context *gin.Context) {
-	var addressField []*models.AdressField
+	var addressField []*models.AddressField
 	err := database.DB.Raw("SELECT * FROM public.AFN_GetAddressOptions();").Scan(&addressField).Error
 	helpers.HandleErr(err)
 
