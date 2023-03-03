@@ -5,10 +5,11 @@ import (
 	"animal-rescue-be/database"
 	"fmt"
 	"log"
+	"net/http"
 	"os"
 
-	"github.com/joho/godotenv"
 	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
 )
 
 func InitServerHeaders() gin.HandlerFunc {
@@ -16,7 +17,7 @@ func InitServerHeaders() gin.HandlerFunc {
 		c.Header("Access-Control-Allow-Origin", "*")
 		c.Header("Access-Control-Allow-Credentials", "true")
 		c.Header("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE,OPTIONS")
-		c.Header("Access-Control-Allow-Headers", "Origin,X-Requested-With,Content-Type,Accept,content-type,application/json")
+		c.Header("Access-Control-Allow-Headers", "*")
 		c.Next()
 	}
 }
@@ -44,7 +45,7 @@ func setupRouter() *gin.Engine {
 	engine.GET("/animals", animal.GetAnimals)
 
 	engine.GET("/form/:id/fields", form.GetFormFields)
-	
+
 	engine.GET("/report/:id", report.GetAnimalRecord)
 
 	engine.GET("/form/address", form.GetAddressOptions)
@@ -60,6 +61,10 @@ func setupRouter() *gin.Engine {
 	engine.POST("/users", user.SignUpUser)
 
 	engine.POST("/users/login", user.LoginUser)
+
+	engine.OPTIONS("/reports", func(c *gin.Context) {
+		c.Status(http.StatusOK)
+	})
 
 	return engine
 }
