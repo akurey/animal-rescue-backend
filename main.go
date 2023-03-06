@@ -5,7 +5,6 @@ import (
 	"animal-rescue-be/database"
 	"fmt"
 	"log"
-	"net/http"
 	"os"
 
 	"github.com/gin-gonic/gin"
@@ -17,18 +16,18 @@ func InitServerHeaders() gin.HandlerFunc {
 		c.Header("Access-Control-Allow-Origin", "*")
 		c.Header("Access-Control-Allow-Credentials", "true")
 		c.Header("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE,OPTIONS")
-		c.Header("Access-Control-Allow-Headers", "*")
+		c.Header("Access-Control-Allow-Headers", "Origin,X-Requested-With,Content-Type,Accept,content-type,application/json")
 		c.Next()
 	}
 }
 
 func setupRouter() *gin.Engine {
-	// Disable Console Color
-	// gin.DisableConsoleColor()
 
 	engine := gin.Default()
 
 	engine.Use(InitServerHeaders())
+
+	api := engine.Group("/api")
 
 	animal := new(controllers.AnimalController)
 
@@ -40,31 +39,32 @@ func setupRouter() *gin.Engine {
 
 	user := new(controllers.UserController)
 
-	engine.GET("/", health.Check)
-
-	engine.GET("/animals", animal.GetAnimals)
-
-	engine.GET("/form/:id/fields", form.GetFormFields)
-
-	engine.GET("/report/:id", report.GetAnimalRecord)
-
-	engine.GET("/form/address", form.GetAddressOptions)
-
-	engine.GET("/reports", report.GetReports)
-
-	engine.POST("/reports", report.AddReport)
-
-	engine.PATCH("/reports/:id", report.UpdateReport)
-
-	engine.DELETE("/reports/:id", report.DeleteReport)
-
-	engine.POST("/users", user.SignUpUser)
-
-	engine.POST("/users/login", user.LoginUser)
-
-	engine.OPTIONS("/reports", func(c *gin.Context) {
-		c.Status(http.StatusOK)
+	api.OPTIONS("/*path", func(c *gin.Context) {
+		c.Header("Access-Control-Allow-Methods", "POST")
+		c.Header("Access-Control-Allow-Headers", "content-type")
 	})
+
+	api.GET("/", health.Check)
+
+	api.GET("/animals", animal.GetAnimals)
+
+	api.GET("/form/:id/fields", form.GetFormFields)
+
+	api.GET("/report/:id", report.GetAnimalRecord)
+
+	api.GET("/form/address", form.GetAddressOptions)
+
+	api.GET("/reports", report.GetReports)
+
+	api.POST("/reports", report.AddReport)
+
+	api.PATCH("/reports/:id", report.UpdateReport)
+
+	api.DELETE("/reports/:id", report.DeleteReport)
+
+	api.POST("/users", user.SignUpUser)
+
+	api.POST("/users/login", user.LoginUser)
 
 	return engine
 }
