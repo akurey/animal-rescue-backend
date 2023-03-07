@@ -7,8 +7,8 @@ import (
 	"log"
 	"os"
 
-	"github.com/joho/godotenv"
 	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
 )
 
 func InitServerHeaders() gin.HandlerFunc {
@@ -22,12 +22,12 @@ func InitServerHeaders() gin.HandlerFunc {
 }
 
 func setupRouter() *gin.Engine {
-	// Disable Console Color
-	// gin.DisableConsoleColor()
 
 	engine := gin.Default()
 
 	engine.Use(InitServerHeaders())
+
+	api := engine.Group("/api")
 
 	animal := new(controllers.AnimalController)
 
@@ -39,27 +39,32 @@ func setupRouter() *gin.Engine {
 
 	user := new(controllers.UserController)
 
-	engine.GET("/", health.Check)
+	api.OPTIONS("/*path", func(c *gin.Context) {
+		c.Header("Access-Control-Allow-Methods", "POST")
+		c.Header("Access-Control-Allow-Headers", "content-type")
+	})
 
-	engine.GET("/animals", animal.GetAnimals)
+	api.GET("/", health.Check)
 
-	engine.GET("/form/:id/fields", form.GetFormFields)
-	
-	engine.GET("/report/:id", report.GetAnimalRecord)
+	api.GET("/animals", animal.GetAnimals)
 
-	engine.GET("/form/address", form.GetAddressOptions)
+	api.GET("/form/:id/fields", form.GetFormFields)
 
-	engine.GET("/reports", report.GetReports)
+	api.GET("/report/:id", report.GetAnimalRecord)
 
-	engine.POST("/reports", report.AddReport)
+	api.GET("/form/address", form.GetAddressOptions)
 
-	engine.PATCH("/reports/:id", report.UpdateReport)
+	api.GET("/reports", report.GetReports)
 
-	engine.DELETE("/reports/:id", report.DeleteReport)
+	api.POST("/reports", report.AddReport)
 
-	engine.POST("/users", user.SignUpUser)
+	api.PATCH("/reports/:id", report.UpdateReport)
 
-	engine.POST("/users/login", user.LoginUser)
+	api.DELETE("/reports/:id", report.DeleteReport)
+
+	api.POST("/users", user.SignUpUser)
+
+	api.POST("/users/login", user.LoginUser)
 
 	return engine
 }
