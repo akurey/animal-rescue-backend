@@ -18,15 +18,6 @@ BEGIN
     INSERT INTO public."AP_Management_Category"(id, name)
         VALUES(1, 'Zoologico');
 
-    INSERT INTO public."AP_Provinces"(id, name)
-        VALUES(1, 'San José'), (2, 'Puntarenas');
-
-    INSERT INTO public."AP_Cantons"(id, name, province_id)
-        VALUES(1, 'Santa Ana', 1), (2, 'Osa', 2);
-
-    INSERT INTO public."AP_Districts"(id, name, canton_id)
-        VALUES(1, 'Santa Ana', 1), (2, 'Bahia Drake', 2);
-
     INSERT INTO public."AP_Directions"(id, exact_direction, district_id)
         VALUES(1, 'Alto de las Palomas', 1);
 
