@@ -5,8 +5,6 @@ import (
 	"animal-rescue-be/helpers"
 	"animal-rescue-be/models"
 	"net/http"
-	"fmt"
-	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -22,52 +20,63 @@ func (ctrl FormController) GetFormFields(context *gin.Context) {
 	context.JSON(http.StatusOK, gin.H{"response": formField})
 }
 
-func (ctrl FormController) getProvinces(context *gin.Context) []models.ProvinceModel{
-	var provinceField []*models.ProvinceField
+
+func (ctrl FormController) groupByProvince(data []*models.AddressField) []models.ProvinceModel {
 	var provinceModel []models.ProvinceModel
-	err := database.DB.Raw("SELECT * FROM public.AFN_GetProvinces();").Scan(&provinceField).Error
-	helpers.HandleErr(err)
-
-
-	for _, province := range provinceField {
-		cantons := ctrl.getCantonByProvinceID(context, province.Id)
-		provinceModelValue := models.ProvinceModel{Id: province.Id, Province: province.Province, Cantons: cantons}
-		provinceModel = append(provinceModel, provinceModelValue)
-	} 
-
-	return provinceModel
+	provinceMap := make(map[string]int)
 	
+	for i, province := range data{
+		provinceMap[province.Province] = i
+	}
+
+	for province := range provinceMap {
+		var cantonModelValue = ctrl.groupByCanton(data, province)
+		var provinceModelValue = models.ProvinceModel{Province: province, Cantons: cantonModelValue}
+		provinceModel = append(provinceModel, provinceModelValue)
+	}
+
+	
+	return provinceModel
 }
 
-func (ctrl FormController) getCantonByProvinceID(context *gin.Context, id int) []models.CantonModel{
-	var cantonFields []*models.CantonField
-	var cantonModel []models.CantonModel
-	query := fmt.Sprintf("SELECT * FROM public.AFN_GetCantonByProvince(%s);",strconv.Itoa(id))
-	err := database.DB.Raw(query).Scan(&cantonFields).Error
-	helpers.HandleErr(err)
 
-	for _, canton := range cantonFields {
-		districts := ctrl.getDistrictByCantonID(context, canton.Id)
-		cantonModelValue := models.CantonModel{Id: canton.Id, Canton: canton.Canton, Districts: districts}
-		cantonModel = append(cantonModel, cantonModelValue)
+func (ctrl FormController) groupByCanton(data []*models.AddressField, province string) []models.CantonModel{
+	var cantonByProvinceList []*models.AddressField
+	var cantonModel []models.CantonModel
+	cantonByProvinceListMap := make(map[string]int)
+
+	for index, address := range data {
+		if address.Province == province {
+			cantonByProvinceListMap[address.Canton] = index
+			cantonByProvinceList = append(cantonByProvinceList, address)
+		}
+	}
+
+	for canton := range cantonByProvinceListMap {
+		 var districtByCanton = ctrl.groupByDistrict(cantonByProvinceList, canton)
+		 var cantonModelValue = models.CantonModel{ Canton: canton, Districts: districtByCanton }
+		 cantonModel = append(cantonModel, cantonModelValue)
 	}
 
 	return cantonModel
 	
 }
 
-func (ctrl FormController) getDistrictByCantonID(context *gin.Context, id int) []*models.DistrictField{
-	var districtFields []*models.DistrictField
-	query := fmt.Sprintf("SELECT * FROM public.AFN_GetDistrictByCanton(%s);",strconv.Itoa(id))
-	err := database.DB.Raw(query).Scan(&districtFields).Error
-	helpers.HandleErr(err)
+func (ctrl FormController) groupByDistrict(data []*models.AddressField, canton string) []models.DistrictModel{
+	var districtByCanton []models.DistrictModel
+	for _, address := range data {
+		if address.Canton == canton {
+			districtByCanton = append(districtByCanton, models.DistrictModel{Id: address.Id, District: address.District} )
+		}
+	}
 
-	return districtFields
-	
+	return districtByCanton
 }
 
 func (ctrl FormController) GetAddressOptions(context *gin.Context) {
-	var addressFields []models.ProvinceModel = ctrl.getProvinces(context)
-
-	context.JSON(http.StatusOK, gin.H{"response": addressFields})
+	var addressField []*models.AddressField
+	err := database.DB.Raw("SELECT * FROM public.AFN_GetAddressOptions();").Scan(&addressField).Error
+	helpers.HandleErr(err)
+	var provinceModel = ctrl.groupByProvince(addressField)
+	context.JSON(http.StatusOK, gin.H{"response": provinceModel})
 }

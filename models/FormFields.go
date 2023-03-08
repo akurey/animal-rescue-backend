@@ -17,29 +17,17 @@ type AddressField struct {
 	District string
 }
 
-type ProvinceField struct {
-	Id       int
-	Province string
-}
-
 type ProvinceModel struct {
-	Id       int
 	Province string
 	Cantons  []CantonModel
 }
 
-type CantonField struct {
-	Id       int
-	Canton string
-}
-
 type CantonModel struct {
-	Id       int
 	Canton string
-	Districts []*DistrictField
+	Districts []DistrictModel
 }
 
-type DistrictField struct {
-	Id       int
+type DistrictModel struct {
+	Id       int64
 	District string
 }
