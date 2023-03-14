@@ -3,5 +3,5 @@ ALTER TABLE "AP_Users"
   ADD "refresh_token" character varying(500) NULL;
 
 ALTER TABLE "AP_Users" 
-  ALTER COLUMN "sinac_registry" DROP NOT NULL;
+ALTER COLUMN "sinac_registry" DROP NOT NULL;
 

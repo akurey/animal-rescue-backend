@@ -100,13 +100,6 @@ BEGIN
     INSERT INTO public."AP_Animal_Classification"(id, name)
         VALUES (1, 'Mamifero'), (2, 'Reptil'), (3, 'Ave'), (4, 'Anfibio'), (5, 'Pez'), (6, 'Arthropodo');
 
-    INSERT INTO public."AP_Animals"(id, name, scientific_name, conservation_status_id, classification_id)
-        VALUES (1, 'Danta', 'Tapirus bairdii', 4, 1),
-               (2, 'Jaguar', 'Panthera onca', 2, 1),
-               (3, 'Lapa Roja', 'Ara macao', 1, 3),
-               (4, 'Terciopelo', 'Bothrops asper', 1, 2),
-               (5, 'Rana de Ojos Rojos', 'Agalychnis callidryas', 1, 4);
-
     INSERT INTO "AP_Form_Sections" (name, form_id)
         VALUES ('Datos del animal', 1),
                ('Datos del rescate', 1),
@@ -116,11 +109,5 @@ BEGIN
     UPDATE "AP_Form_Fields" SET form_section_id = 2 WHERE form_id=1 AND field_id > 6 AND field_id <= 10;
     UPDATE "AP_Form_Fields" SET form_section_id = 3 WHERE form_id=1 AND field_id > 10;
 
-    INSERT INTO "AP_Animal_Reports"(id, form_id, reporter_id, animal_id, is_public , is_approved)
-        VALUES (1, var_formId, var_userId, 1, B'0', B'1'), (2, var_formId, var_userId, 2, B'0', B'1');
-
-    INSERT INTO "AP_Report_Field_Values"(report_id, field_id, value)
-        VALUES (1, 1, 'Macho'), (1, 2, 'Negro'), (1, 3, '12345'), (1, 4, 'Cerro de la muerte'), (1, 9, 'Alto de las Palomas ▽ 1'),
-               (2, 1, 'Hembra'), (2, 2, 'Amarillo'), (2, 3, '67890'), (2, 4, 'Osa'), (2, 9, 'PN Corcovado ▽ 2');
 
 END $$;
