@@ -1,6 +1,9 @@
 -- the csv in \animal-rescue-backend\database was cleaned 
 -- beforehand to delete duplicate values and other wrong values
 
+INSERT INTO "AP_Conservation_Status" (name, abbreviation)
+VALUES ('N/A', 'NA');
+
 CREATE TEMPORARY TABLE "temp_animals"(
 	scientific_name VARCHAR(100),
 	common_name VARCHAR(100),
