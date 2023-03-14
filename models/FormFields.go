@@ -16,3 +16,18 @@ type AddressField struct {
 	Canton   string
 	District string
 }
+
+type ProvinceModel struct {
+	Province string
+	Cantons  []CantonModel
+}
+
+type CantonModel struct {
+	Canton string
+	Districts []DistrictModel
+}
+
+type DistrictModel struct {
+	Id       int64
+	District string
+}
