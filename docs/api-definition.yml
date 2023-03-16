@@ -1,0 +1,506 @@
+swagger: '2.0'
+info:
+  description: API Definition
+  version: 1.0.0
+  title: Animal-rescue-api
+  contact:
+    email: bortiz@akurey.com
+host: localhost:8000
+basePath: /api
+schemes:
+  - http
+tags:
+  - name: Animals
+    description: Endpoint for animals operations
+  - name: Form
+    description: Endpoint for form operations
+  - name: Report
+    description: Endpoint for report operations
+  - name: Users
+    description: Endpoint for users operations
+
+paths:
+###------------------------------------------------------###
+###------------------ Animals Definitions ---------------###
+###------------------------------------------------------###
+  /animals:
+    get:
+      summary: Get all the animals
+      description: Get all the animals data
+      tags:
+        - Animals
+      responses:
+        '200':
+          description: Success Response
+          schema: 
+            $ref: '#/definitions/getAnimalsResponse'
+
+###------------------------------------------------------###
+###------------------- Users Definitions ----------------###
+###------------------------------------------------------###
+  /users:
+    post:
+      summary: Create a new user
+      description: Create a new user and return user data with tokens
+      parameters:
+        - name: body
+          in: body
+          description: user data
+          required: true
+          schema:
+            $ref: '#/definitions/UserRequest'
+      tags:
+        - Users
+      responses:
+        '200':
+          description: Success Response
+          schema:
+            type: object
+            properties: 
+              response:
+                $ref: '#/definitions/UserResponse'
+  /users/login:
+    post:
+      summary: Login user
+      description: Login an user
+      parameters:
+        - name: body
+          in: body
+          description: user credentials
+          required: true
+          schema:
+            $ref: '#/definitions/UserLoginRequest'
+      tags:
+        - Users
+      responses:
+        '200':
+          description: Success Response
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: Sign in successfull
+              success:
+                type: boolean
+                example: true
+              data:
+                $ref: '#/definitions/UserLoginResponse'
+        '401':
+          description: Bad credentials
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: the credentials are wrong
+
+###------------------------------------------------------###
+###------------------- Forms Definitions ----------------###
+###------------------------------------------------------###
+  /form/{id}/fields:
+    get:
+      summary: Get form fields
+      description: Get all the form fields values
+      parameters:
+        - name: id
+          in: path
+          description: form id
+          type: string
+          required: true
+      tags: 
+        - Form
+      responses:
+        '200':
+          description: Success response
+          schema:
+            $ref: '#/definitions/FormFielsdResponse'
+  /form/address:
+    get:
+      summary: Get address options
+      description: Get province, canton and district options
+      tags: 
+        - Form
+      responses:
+        '200':
+          description: Success response
+          schema:
+            type: object
+            properties: 
+              response:
+                type: array
+                items:
+                  type: object
+                  $ref: '#/definitions/AddressResponse'
+
+###------------------------------------------------------###
+###------------------- Report Definitions ---------------###
+###------------------------------------------------------###
+  /report/{id}:
+    get:
+      summary: Get report detail
+      description: Get report detail by id
+      parameters:
+        - name: id
+          in: path
+          description: report id
+          type: string
+          required: true
+      tags: 
+        - Report
+      responses:
+        '200':
+          description: Success response
+          schema:
+            type: object
+            properties:
+              response:
+                type: object
+                $ref: '#/definitions/ReportResponse'
+
+  /reports:
+    get:
+      summary: Get all reports
+      description: Get all reports
+      tags: 
+          - Report
+      responses:
+        '200':
+          description: Success response
+          schema:
+            type: object
+            properties:
+              response:
+                type: array
+                items:
+                  type: object
+                  $ref: '#/definitions/ReportAllResponse'
+    post:
+      summary: Post report
+      description: Post a new report 
+      parameters:
+        - name: body
+          in: body
+          description: Report payload
+          required: true
+          schema:
+            $ref: '#/definitions/NewReportPayload'
+      tags: 
+          - Report
+      responses:
+        '200':
+          description: Success response
+          schema:
+            $ref: '#/definitions/ReportAllResponse'
+
+  /reports/{id}:
+    delete:
+      summary: Delete a report
+      description: Delete a report by id
+      parameters:
+        - name: id
+          in: path
+          description: report id
+          type: string
+          required: true
+      tags: 
+          - Report
+      responses:
+        '200':
+          description: Success response
+          schema:
+            type: object
+            properties:
+              response:
+                type: number
+                example: 1
+
+###------------------------------------------------------###
+###------------------- Models Definitions ----------------###
+###------------------------------------------------------###
+
+definitions:
+  NewReportPayload:
+    type: object
+    properties:
+      animal_id:
+        type: number
+        example: 4
+      reporter_id: 
+        type: number
+        example: 1
+      form_id:
+        type: number
+        example: 1
+      field_values:
+        type: string
+        example: '{\"section\":\"Datos del animal\",\"Nombre\":\"test\",\"Motivo de entrega\":\"test\",\"Apellidos\":\"test\",\"Observaciones\":\"test\",\"Razón de recepción\":\"Ingreso Temporal\",\"Tipo de Caso\":\"Tenencia Irregular\",\"Provincia\":\"Guanacaste\",\"Cantón\":\"Liberia\",\"Distrito\":\"Liberia\",\"Dirección exacta\":\"test\",\"Número de identificación (CHIP)\":\"123\",\"Procedencia\":\"test\",\"Datos del padre\":\"test\",\"Datos de la madre\":\"test\",\"Dirección\":\"{\\\"Canton\\\":\\\"Liberia\\\",\\\"Exacta\\\":\\\"test\\\",\\\"Distrito\\\":\\\"test\\\",\\\"Provincia\\\":\\\"Guanacaste\\\"}\"}'
+  ReportAllResponse:
+    type: object
+    properties:
+      id:
+        type: number
+        example: 1
+      CreatedAt:
+        type: string
+        example: 14/03/2023
+      IsApproved:
+        type: boolean
+        example: false
+      AnimalName:
+        type: string
+        example: Rana ojos rojos
+      AnimalId:
+        type: number
+        example: 53
+      ScientificName:
+        type: string
+        example: Agalichnys callidrias
+      ConservationStatusName:
+        type: string
+        example: Preocupación menor
+      Abbreviation:
+        type: string
+        example: LC
+      ClassificationName:
+        type: string
+        example: Reptil
+      Fields:
+        type: string
+        example: '{\"Nombre\": \"test\", \"Apellidos\": \"test\", \"Dirección\": \"{\\\"Canton\\\":\\\"San Carlos\\\",\\\"Exacta\\\":\\\"123\\\",\\\"Distrito\\\":\\\"213\\\",\\\"Provincia\\\":\\\"Alajuela\\\"}\", \"Procedencia\": \"123\", \"Tipo de Caso\": \"Tenencia Legal\", \"Observaciones\": \"123\", \"Datos del padre\": \"123\", \"Datos de la madre\": \"123\", \"Motivo de entrega\": \"test\", \"Razón de recepción\": \"Ingreso Temporal\", \"Número de identificación (CHIP)\": \"123\"}'
+
+  ReportResponse:
+    type: object
+    properties:
+      id:
+        type: number
+        example: 1
+      IdAnimal:
+        type: number
+        example: 53
+      AnimalName:
+        type: string
+        example: Rana ojos rojos
+      ScientificName:
+        type: string
+        example: Agalichnys callidrias
+      ConservationStatusName:
+        type: string
+        example: Preocupación menor
+      Abbreviation:
+        type: string
+        example: LC
+      ClassificationName:
+        type: string
+        example: Reptil
+      Fields:
+        type: string
+        example: '{\"Nombre\": \"test\", \"Apellidos\": \"test\", \"Dirección\": \"{\\\"Canton\\\":\\\"San Carlos\\\",\\\"Exacta\\\":\\\"123\\\",\\\"Distrito\\\":\\\"213\\\",\\\"Provincia\\\":\\\"Alajuela\\\"}\", \"Procedencia\": \"123\", \"Tipo de Caso\": \"Tenencia Legal\", \"Observaciones\": \"123\", \"Datos del padre\": \"123\", \"Datos de la madre\": \"123\", \"Motivo de entrega\": \"test\", \"Razón de recepción\": \"Ingreso Temporal\", \"Número de identificación (CHIP)\": \"123\"}'
+
+  AddressResponse:
+    type: object
+    properties: 
+      Province:
+        type: string
+        example: Cartago
+      Cantons:
+        type: array
+        items: 
+          type: object
+          $ref: '#/definitions/CantonsStructure'
+  
+  CantonsStructure:
+    type: object
+    properties: 
+      Canton:
+        type: string
+        example: Turrialba
+      Districts: 
+        type: array
+        items:
+          type: object
+          $ref: '#/definitions/DistrictStructure'
+
+  DistrictStructure:
+    type: object
+    properties: 
+      Id:
+        type: number
+      District:
+        type: string
+    example:
+      - id: 1
+        District: Chirripó
+      - id: 2
+        District: La Isabel
+      
+  FormFielsdResponse:
+    type: object
+    properties: 
+      response:
+        type: array
+        items:
+          type: object
+          properties: 
+            FormName:
+              type: string
+            FormSection:
+              type: string
+            FieldId:
+              type: number
+            FieldName:
+              type: string
+            IsRequired:
+              type: boolean
+            FieldType:
+              type: string
+            FieldOptions:
+              type: string
+        example: 
+          - FormName: Registro Animal
+            FormSection: Datos del animal
+            FieldId: 1
+            FieldName: Sexo
+            IsRequired: true
+            FieldType: Dropdown
+            FieldOptions: [Macho, Hembra, Indefinido]
+          - FormName: Registro Animal
+            FormSection: Datos del animal
+            FieldId: 2
+            FieldName: Color
+            IsRequired: true
+            FieldType: Dropdown
+            FieldOptions: [Café, Verde, Negro, Azul, Rojo, Amarillo]
+          - FormName: Registro Animal
+            FormSection: Datos del rescate
+            FieldId: 7
+            FieldName: Datos de la madre
+            IsRequired: true
+            FieldType: Textarea
+            FieldOptions: 
+          - FormName: Registro Animal
+            FormSection: Datos del rescate
+            FieldId: 8
+            FieldName: Dirección
+            IsRequired: true
+            FieldType: Address 
+            FieldOptions: 
+          - FormName: Registro Animal
+            FormSection: Datos del rescatista
+            FieldId: 13
+            FieldName: Cédula
+            IsRequired: false
+            FieldType: Cedula
+            FieldOptions: 
+
+
+  UserLoginResponse:
+    type: object
+    properties:
+      email:
+        type: string
+        example: carlitos@test.com
+      name:
+        type: string
+        example: Carlitos Villalobos
+      refresh_token:
+        type: string
+        example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VybmFtZSI6IiIsImV4cCI6MTY3ODkwNTI1MH0.XhMjhyl9tMn-ElhBVDN1RZ0KGQesZOgv8YXvzbGIHAc
+      token:
+        type: string
+        example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VybmFtZSI6ImJyeWFuIiwiZXhwIjoxNjc4OTA1MjUwfQ.wiAHwDLjCHzcnYRRGUH8miKnOTnnM0cwqZ2j-ZSvJb0
+  UserLoginRequest:
+    type: object
+    properties: 
+      username:
+        type: string
+        example: carlitos
+      password:
+        type: string
+        example: asddsadasda12323cdfdas.ImNhbWJpYW1lIg.vJFPuNy41V3nL8unj2z0dN_1mqxopmH9huyOD9_MHpI
+
+  UserResponse:
+    type: object
+    properties: 
+      first_name:
+        type: string
+        example: Carlos
+      last_name:
+        type: string
+        example: Villalobos
+      username:
+        type: string
+        example: Carlitos
+      email:
+        type: string
+        example: carlitos@test.com
+      identification:
+        type: string
+        example: 1111113
+      sinac_registry:
+        type: string
+        example: test
+      token:
+        type: string
+        example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VybmFtZSI6ImJyeWFuMiIsImV4cCI6MTY3ODkwNDk5M30.iYG7_973ikjOA6BoBJ_RO38cWowGmA6cjaM0I4dkxy
+      refresh_token:
+        type: string
+        example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VybmFtZSI6IiIsImV4cCI6MTY3ODkwNDk5M30.78NrpXzjzVMlLfD1wadyI0c3xMIAsVTV8YW0ys9
+
+  UserRequest:
+    type: object
+    properties: 
+      first_name:
+        type: string
+        example: Carlos
+      last_name:
+        type: string
+        example: Villalobos
+      username:
+        type: string
+        example: Carlitos
+      email:
+        type: string
+        example: carlitos@test.com
+      sinac_registry:
+        type: string
+        example: test
+      password:
+        type: string
+        example: asddsadasda12323cdfdas.ImNhbWJpYW1lIg.vJFPuNy41V3nL8unj2z0dN_1mqxopmH9huyOD9_MHpI
+      identification:
+        type: string
+        example: 1111113
+      
+  getAnimalsResponse:
+    type: object
+    properties: 
+      responses:
+        type: array
+        items:
+          type: object
+          properties: 
+            id:
+                type: string
+                example: 1
+            Name:
+                type: string
+                example: Oso hormiguero
+            ScientificName:
+                type: string
+                example: Tamandua mexicana
+            Created_at:
+                type: string
+                example: 2023-03-14T10:01:51.68158Z
+            ConservationStatus:
+                type: string
+                example: Preocupación menor
+            ConservationAbbreviation:
+                type: string
+                example: LC
+            ClassificationName:
+                type: string
+                example: Mamifero
+            
+
+          
