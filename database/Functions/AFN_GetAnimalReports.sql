@@ -32,6 +32,7 @@ RETURN QUERY
          INNER JOIN "AP_Fields" AF ON AF.id = ARFV.field_id
          INNER JOIN "AP_Field_Types" AFT ON AF.field_type_id = AFT.id
          LEFT JOIN Directions D ON AFT.name = 'Address' AND D.id = CAST_TO_INT(SPLIT_PART(ARFV.value, '▽', 2), 0)
-    GROUP BY AAR.id, AA.id, AA.name, AA.scientific_name, ACS.name, ACS.abbreviation, AAC.name;
+    GROUP BY AAR.id, AA.id, AA.name, AA.scientific_name, ACS.name, ACS.abbreviation, AAC.name
+    ORDER  BY AAR.id DESC;
 END;
 $BODY$;
