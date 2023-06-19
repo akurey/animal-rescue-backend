@@ -107,6 +107,15 @@ func UpdateUserTokens(signedToken string, signedRefreshToken string, username st
 	return
 }
 
+func (ctrl UserController) LogoutUser(ctx *gin.Context){
+	tokenString := helpers.ExtractToken(ctx)
+	var message string;
+	err := database.DB.Raw("SELECT * FROM public.AFN_LogoutUser(?);", tokenString).Scan(&message).Error
+	helpers.HandleErr(err)
+	ctx.JSON(http.StatusOK, gin.H{"response": message})
+	
+}
+
 func (ctrl UserController) LoginUser(ctx *gin.Context) {
 
 	body := models.LoginUserRequest{}
