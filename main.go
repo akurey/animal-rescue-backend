@@ -43,11 +43,6 @@ func setupRouter() *gin.Engine {
 	report := new(controllers.ReportController)
 	user := new(controllers.UserController)
 
-	// apiProtected.OPTIONS("/*path", func(c *gin.Context) {
-	// 	c.Header("Access-Control-Allow-Methods", "POST")
-	// 	c.Header("Access-Control-Allow-Headers", "content-type")
-	// })
-
 	apiProtected.GET("/animals", animal.GetAnimals)
 	apiProtected.GET("/form/:id/fields", form.GetFormFields)
 	apiProtected.GET("/report/:id", report.GetAnimalRecord)
